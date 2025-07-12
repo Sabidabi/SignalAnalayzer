@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SignalAnalayzer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+03b67ff501a4ab04f2be2f783840ee982aa8ea7d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5a37f4eae2d731aca5aee4c9716c402e35adb5f2")]
 [assembly: System.Reflection.AssemblyProductAttribute("SignalAnalayzer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SignalAnalayzer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

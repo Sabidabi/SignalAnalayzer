@@ -12,9 +12,7 @@ namespace SignalAnalayzer
     public static class LanguageManager
     {
         
-            private static readonly ResourceManager ResourceManager =
-                new ResourceManager("SignalAnalayzer.Resources.Resources", Assembly.GetExecutingAssembly());
-
+            private static readonly ResourceManager ResourceManager = new ResourceManager("SignalAnalayzer.Resources.Resources", Assembly.GetExecutingAssembly());
             public static string GetString(string key)
             {
                 return ResourceManager.GetString(key, CultureInfo.CurrentUICulture) ?? $"[{key}]";

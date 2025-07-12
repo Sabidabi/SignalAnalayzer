@@ -44,27 +44,20 @@ namespace SignalAnalayzer.ViewModels
                 var file = await DoOpenFilePickerAsync();
                 if (file == null) return;
                 directory = Path.GetDirectoryName(file.Path.LocalPath);
-                if ((await file.GetBasicPropertiesAsync()).Size <= 1024 * 1024 * 100)
+                SignalFiles.Clear();
+                await using var readStream = await file.OpenReadAsync();
+                using var reader = new StreamReader(readStream);
+                BOSMeth? bosMeth = formatter.Deserialize(reader) as BOSMeth;
+                if (bosMeth is null) return;
+                foreach (var channel in bosMeth.Channels)
                 {
-                    SignalFiles.Clear();
-                    await using var readStream = await file.OpenReadAsync();
-                    using var reader = new StreamReader(readStream);
-                    BOSMeth? bosMeth = formatter.Deserialize(reader) as BOSMeth;
-                    if (bosMeth is null) return;
-                    foreach (var channel in bosMeth.Channels)
+                    SignalFiles.Add(new SignalFileInfo
                     {
-                        SignalFiles.Add(new SignalFileInfo
-                        {
-                            FileName = channel.SignalFileName,
-                            SamplingFreq = channel.EffectiveFd,
-                            DurationSec = 0,
-                            SignalName = NameOfSignal(channel.Type)
-                        });
-                    }
-                }
-                else
-                {
-                    throw new Exception("File exceeded 100MB limit.");
+                        FileName = channel.SignalFileName,
+                        SamplingFreq = channel.EffectiveFd,
+                        DurationSec = 0,
+                        SignalName = NameOfSignal(channel.Type)
+                    });
                 }
             }
             catch (Exception e)
@@ -76,7 +69,7 @@ namespace SignalAnalayzer.ViewModels
         {
             if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
                 desktop.MainWindow?.StorageProvider is not { } provider)
-                throw new NullReferenceException("Missing StorageProvider instance.");
+                throw new NullReferenceException("Missing StorageProvider");
             var fileTypeFilters = new List<FilePickerFileType>
             {
                 new FilePickerFileType("XML Files")
@@ -134,7 +127,7 @@ namespace SignalAnalayzer.ViewModels
                 file.Min=signalCalculatorStat.Min;
                 file.ExpectMate = signalCalculatorStat.ExpectMate;
                 if(file.SamplingFreq!=0) file.DurationSec = doublesToReadAll / file.SamplingFreq;
-                else ErrorMessages?.Add($"Sampling frequency is zero for file {file.FileName}");
+                else ErrorMessages?.Add($"Sampling frequency is zero for {file.FileName}");
             }
             catch (Exception e)
             {
